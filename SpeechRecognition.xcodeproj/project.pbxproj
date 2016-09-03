@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		052E2C141D79A14D00164671 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 052E2C131D79A14D00164671 /* main.cpp */; };
+		052E2C1C1D79A1B500164671 /* libportaudio.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 052E2C1B1D79A1B500164671 /* libportaudio.a */; };
+		052E2C1E1D79A2E600164671 /* libportaudio.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 052E2C1D1D79A2E600164671 /* libportaudio.2.dylib */; };
+		052E2C201D79A35C00164671 /* captureData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 052E2C1F1D79A35C00164671 /* captureData.cpp */; };
+		052E2C241D79A4A700164671 /* readwave.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 052E2C231D79A4A700164671 /* readwave.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +29,13 @@
 /* Begin PBXFileReference section */
 		052E2C101D79A14D00164671 /* SpeechRecognition */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = SpeechRecognition; sourceTree = BUILT_PRODUCTS_DIR; };
 		052E2C131D79A14D00164671 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		052E2C1A1D79A15B00164671 /* portaudio.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = portaudio.h; path = ../../hty/program_package/portaudio/include/portaudio.h; sourceTree = "<group>"; };
+		052E2C1B1D79A1B500164671 /* libportaudio.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libportaudio.a; sourceTree = "<group>"; };
+		052E2C1D1D79A2E600164671 /* libportaudio.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libportaudio.2.dylib; sourceTree = "<group>"; };
+		052E2C1F1D79A35C00164671 /* captureData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = captureData.cpp; sourceTree = "<group>"; };
+		052E2C211D79A40900164671 /* captureData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = captureData.h; sourceTree = "<group>"; };
+		052E2C221D79A4A700164671 /* readwave.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = readwave.h; sourceTree = "<group>"; };
+		052E2C231D79A4A700164671 /* readwave.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = readwave.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +43,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				052E2C1E1D79A2E600164671 /* libportaudio.2.dylib in Frameworks */,
+				052E2C1C1D79A1B500164671 /* libportaudio.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -57,7 +70,14 @@
 		052E2C121D79A14D00164671 /* SpeechRecognition */ = {
 			isa = PBXGroup;
 			children = (
+				052E2C1D1D79A2E600164671 /* libportaudio.2.dylib */,
+				052E2C1B1D79A1B500164671 /* libportaudio.a */,
+				052E2C1A1D79A15B00164671 /* portaudio.h */,
 				052E2C131D79A14D00164671 /* main.cpp */,
+				052E2C1F1D79A35C00164671 /* captureData.cpp */,
+				052E2C211D79A40900164671 /* captureData.h */,
+				052E2C221D79A4A700164671 /* readwave.h */,
+				052E2C231D79A4A700164671 /* readwave.cpp */,
 			);
 			path = SpeechRecognition;
 			sourceTree = "<group>";
@@ -118,6 +138,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				052E2C241D79A4A700164671 /* readwave.cpp in Sources */,
+				052E2C201D79A35C00164671 /* captureData.cpp in Sources */,
 				052E2C141D79A14D00164671 /* main.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -209,6 +231,10 @@
 		052E2C181D79A14D00164671 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SpeechRecognition",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -216,6 +242,10 @@
 		052E2C191D79A14D00164671 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SpeechRecognition",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -239,6 +269,7 @@
 				052E2C191D79A14D00164671 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
