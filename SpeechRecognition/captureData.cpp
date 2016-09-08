@@ -18,7 +18,6 @@ int totalFrames = 0;
 
 int outTime  = 0;
 
-
 typedef struct
 {
     int          frameIndex;  /* Index into sample array. */
@@ -338,6 +337,7 @@ void capture(){
     {
         char wavFile[] = "/Users/hty/desktop/record.wav";
         WriteWave(wavFile, data.recordedSamples , numSamples, SAMPLE_RATE);
+//        WriteWave(wavFile, data.recordedSamples , numSamples, 16000);
     }
 #endif
 

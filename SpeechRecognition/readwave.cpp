@@ -30,7 +30,7 @@ bool WaveRewind(FILE *wav_file, WavFileHead *wavFileHead)
 }
 
 
-short *ReadWave(char *wavFile, int *numSamples, int *sampleRate ) 
+short *ReadWave(const char *wavFile, int *numSamples, int *sampleRate ) 
 {                                                               
 	FILE	*wavFp;
 	WavFileHead		wavHead;
@@ -80,7 +80,7 @@ void FillWaveHeader(void *buffer, int raw_wave_len, int sampleRate)
 	memcpy(buffer, &wavHead, sizeof(WavFileHead));
 }
 
-void WriteWave(char *wavFile, short *waveData, int numSamples, int sampleRate)
+void WriteWave(const char *wavFile, short *waveData, int numSamples, int sampleRate)
 {
 	FILE	*wavFp;
 	WavFileHead		wavHead;
@@ -97,11 +97,10 @@ void WriteWave(char *wavFile, short *waveData, int numSamples, int sampleRate)
 	fwrite(&wavHead, sizeof(WavFileHead), 1, wavFp);
 	numWrite = fwrite(waveData, sizeof(short), numSamples, wavFp);
 	assert(numWrite == numSamples);
-    printf("The recording sound has been stored into the desktop!");
 	fclose(wavFp);
 }
 
-void GetWavHeader(char *wavFile, short *Bits, int *Rate,
+void GetWavHeader(const char *wavFile, short *Bits, int *Rate,
 				  short *Format, int *Length, short *Channels) 
 {                                                               
 	FILE	*wavFp;
@@ -131,14 +130,14 @@ void GetWavHeader(char *wavFile, short *Bits, int *Rate,
 	*Bits = wavHead.NBitsPersample;
 	*Format = wavHead.FormatCategory;
 	*Rate = wavHead.SampleRate;
-	*Length = numRead;
+	*Length = (int)numRead;
 	*Channels = wavHead.NChannels;
 
 	delete []	waveData;
 }
 
 
-short *ReadWavFile(char *wavFile, int *numSamples, int *sampleRate ) 
+short *ReadWavFile(const char *wavFile, int *numSamples, int *sampleRate )
 {                                                               
 	FILE	*wavFp;
 	WavFileHead		wavHead;
@@ -165,12 +164,12 @@ short *ReadWavFile(char *wavFile, int *numSamples, int *sampleRate )
 	numRead = fread(waveData, sizeof(short), (File_length-sizeof(struct WavFileHead))/sizeof(short), wavFp);
 	fclose(wavFp);
 
-	*numSamples = numRead;
+	*numSamples = (int)numRead;
 	*sampleRate = wavHead.SampleRate;
 	return	waveData;
 }
 
-void ReadWav(char *wavFile, short *waveData, int *numSamples, int *sampleRate) 
+void ReadWav(const char *wavFile, short *waveData, int *numSamples, int *sampleRate)
 {                                                               
 	FILE	*wavFp;
 	WavFileHead		wavHead;
