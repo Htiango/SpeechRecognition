@@ -18,6 +18,10 @@ using namespace std;
 
 #define ACTUAL_SAMPLE_PER_FRAME (512)    // in order to do the fft
 
+#define MEL_POINT               (40)
+
+#define DCT_DIMENSION           (13)
+
 // ---------
 #define NUM_FILTER              (40)     // set the num of filters to be 40
 
