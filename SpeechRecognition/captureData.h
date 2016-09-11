@@ -1,3 +1,6 @@
+#ifndef _DATACAPTURE_H_
+#define _DATACAPTURE_H_
+
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,3 +36,5 @@ typedef short SAMPLE;
 #define SILENCETHRESHOLD    (100)
 
 void capture();
+
+#endif

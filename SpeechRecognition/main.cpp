@@ -10,11 +10,13 @@
 #include "portaudio.h"
 #include "captureData.h"
 #include "fft.h"
+#include "featureExtraction.h"
 
 using namespace std;
 
 
 int main(int argc, const char * argv[]) {
 //    capture();
-    test();
+//    test();
+    featureExtraction();
 }

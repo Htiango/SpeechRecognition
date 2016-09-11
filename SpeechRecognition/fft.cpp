@@ -12,6 +12,7 @@ void fft(CArray& x)
     CArray even = x[slice(0, N/2, 2)];
     CArray  odd = x[slice(1, N/2, 2)];
     
+    
     // conquer
     fft(even);
     fft(odd);

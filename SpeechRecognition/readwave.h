@@ -1,4 +1,6 @@
 #ifndef _READWAV_H_
+#define _READWAV_H_
+
 #include "stdio.h"
 
 struct WavFileHead

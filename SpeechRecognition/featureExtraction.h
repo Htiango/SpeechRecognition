@@ -1,6 +1,10 @@
+#ifndef _FEATUREEXTRACTION_H_
+#define _FEATUREEXTRACTION_H_
+
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <fstream>
 #include "readwave.h"
 #include "fft.h"
 
@@ -25,4 +29,6 @@ using namespace std;
 // ---------
 #define NUM_FILTER              (40)     // set the num of filters to be 40
 
+void featureExtraction();
 
+#endif

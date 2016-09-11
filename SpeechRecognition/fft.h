@@ -1,3 +1,7 @@
+#ifndef _FFT_H_
+#define _FFT_H_
+
+
 #include <complex>
 #include <iostream>
 #include <valarray>
@@ -14,3 +18,5 @@ typedef valarray<Complex> CArray;
 void fft(CArray &x);
 void ifft(CArray& x);
 void test();
+
+#endif //_FFT_H_
