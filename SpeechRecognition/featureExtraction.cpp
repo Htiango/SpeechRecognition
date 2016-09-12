@@ -10,11 +10,11 @@ int frameNum = 0;
  *
  *  @return            waveData after pre-emphasized
  */
-short* preemphasized(short* waveData, double factor, int sampleNum)
+double* preemphasized(short* waveData, double factor, int sampleNum)
 {
 //    long sampleNum = sizeof(waveData);
     
-    short* waveDataAfter = new short[sampleNum];
+    double* waveDataAfter = new double[sampleNum];
     
 //    cout << waveData[138008];
     
@@ -50,31 +50,33 @@ void hamming( double *hamWin, int hamWinSize )
  *
  *  @return  2-d frames, each line represents several points in the frame
  */
-short** getFrame(short* waveData, int numPerframe, int actualNumPerFrame, int sampleNum)
+double** getFrame(double* waveData, int numPerframe, int actualNumPerFrame, int sampleNum)
 {
 //    long sampleNum = sizeof(waveData);
 //    long frameNum;
     double *hamWin = new double[numPerframe];
     hamming(hamWin, numPerframe);
     
-    if( sampleNum % numPerframe == 0){
-        frameNum = sampleNum / numPerframe;
+    int uniqueFrameNum = numPerframe / 2 ;
+    
+    if( (sampleNum - uniqueFrameNum) % uniqueFrameNum == 0){
+        frameNum =( sampleNum - uniqueFrameNum) / uniqueFrameNum;
     }
     else{
-        frameNum = sampleNum / numPerframe +1 ;
+        frameNum = ( sampleNum - uniqueFrameNum) / uniqueFrameNum ;
     }
-    short** frameData = new short*[frameNum];
+    double** frameData = new double*[frameNum];
     
     for (int i = 0; i < frameNum; i++) {
-        frameData[i] = new short[actualNumPerFrame];
+        frameData[i] = new double[actualNumPerFrame];
     }
 //    frameData[0][0] = 1;
     for (int i = 0; i < frameNum; i ++) {
         for (int j = 0; j < actualNumPerFrame; j++) {
-            if ((j >= numPerframe) || ((j + i * numPerframe) >= sampleNum)) {
+            if ((j >= numPerframe) || ((j + i * uniqueFrameNum) >= sampleNum)) {
                 frameData[i][j] = 0;
             }
-            else frameData[i][j] = waveData[j + i * numPerframe] * hamWin[j];
+            else frameData[i][j] = waveData[j + i * uniqueFrameNum] * hamWin[j];
         }
     }
     return frameData;
@@ -90,7 +92,7 @@ short** getFrame(short* waveData, int numPerframe, int actualNumPerFrame, int sa
  *
  *  @return discrete frequency power spectrum
  */
-double* getFftEnergy(short* frameData, int actualNumPerFrame ){
+double* getFftEnergy(double* frameData, int actualNumPerFrame ){
 
     double* frameEnergy = new double[actualNumPerFrame / 2 + 1];
 //    Complex *frameDataComplex = new Complex(actualNumPerFrame);
@@ -105,7 +107,12 @@ double* getFftEnergy(short* frameData, int actualNumPerFrame ){
     fft(data);
     
     for (int i = 0; i < (actualNumPerFrame / 2 + 1) ; i ++) {
-        frameEnergy[i] = 10 * log10(pow(abs(data[i]),2));
+        if (abs(data[i])<=1) {
+            frameEnergy[i] = 0;
+        }
+        else{
+            frameEnergy[i] = pow(abs(data[i]),2);
+        }
     }
     return frameEnergy;
 }
@@ -126,21 +133,21 @@ double* getMelEnergy(double* fftSampleEnergy){
     double freMax = sampleRate / 2 ;
     double melFreMax = 1125 * log(1 + freMax / 700);
     
-    double melGap = melFreMax / (filterNum + 1); // mel-fre gap
+    double melGap = melFreMax / (filterNum + 1);   // mel-fre gap
     
     double* melEdge = new double[filterNum + 2];   // each mel-fre edge
     double* freEdge = new double[filterNum + 2];   // each actual-fre edge
-    int* freEdgePoint = new int[filterNum + 2];    // each actual-fre edge point
+    double* freEdgePoint = new double[filterNum + 2];    // each actual-fre edge point
     
     for (int i = 0; i < filterNum + 2; i++) {
         melEdge[i] = melGap * i;
         freEdge[i] = 700 * (exp( melEdge[i] / 1125) - 1);
-        freEdgePoint[i] = round((frameSize + 1) * freEdge[i] / sampleRate * 2);
+        freEdgePoint[i] = ( frameSize * freEdge[i] / freMax);
 //        cout << i <<" =" << freEdgePoint[i]<<endl;
     }
     
     delete [] melEdge;
-    delete [] freEdge;
+//    delete [] freEdge;
     
     for (int i = 0; i < filterNum; i++) {
         melEnergy[i] = 0;
@@ -149,8 +156,8 @@ double* getMelEnergy(double* fftSampleEnergy){
     for (int i = 1; i <= filterNum; i++) {
         double temp = 0;
         
-        cout << "i-1= " << freEdgePoint[i-1] << endl;
-        cout << "i = " <<  freEdgePoint[i]<< endl;
+//        cout << "i-1= " << freEdgePoint[i-1] << endl;
+//        cout << "i = " <<  freEdgePoint[i]<< endl;
         
         for (int j = 0; j < frameSize; j++) {
 
@@ -158,15 +165,17 @@ double* getMelEnergy(double* fftSampleEnergy){
                 temp = 0;
             }
             else if (j >= freEdgePoint[i - 1] && j <= freEdgePoint[i] && (freEdgePoint[i]!=freEdgePoint[i-1])){
-                temp = (j - freEdgePoint[i - 1]) / (freEdgePoint[i] - freEdgePoint[i - 1]);
+                temp = (j - freEdgePoint[i - 1]) / (freEdgePoint[i] - freEdgePoint[i - 1]) * 1.0;
             }
             else if (j >= freEdgePoint[i] && j <= freEdgePoint[i+1] && (freEdgePoint[i+1]!=freEdgePoint[i])){
-                temp = (freEdgePoint[i + 1] - j) / (freEdgePoint[i+1] - freEdgePoint[i]);
+                temp = (freEdgePoint[i + 1] - j) / (freEdgePoint[i+1] - freEdgePoint[i]) * 1.0;
             }
             else if (j > freEdgePoint[i + 1]){
                 temp = 0;
             }
             melEnergy[i - 1] += fftSampleEnergy[j] * temp ;
+//            if (temp != 0)
+//                cout << "temp = " << temp <<endl;
         }
         
     }
@@ -186,7 +195,11 @@ double* getMelLogEnergy(double* melEnergy){
     int filterNum = MEL_POINT;
     double* melLogEnergy = new double[filterNum];
     for (int i = 0; i < filterNum; i++) {
-        melLogEnergy[i] = log(melEnergy[i]);
+        if (melEnergy[i] <= 1) {
+            melLogEnergy[i] = 0;
+        }
+        else
+            melLogEnergy[i] = log(melEnergy[i]);
     }
     
     return melLogEnergy;
@@ -217,10 +230,37 @@ double* getDCT(double* melLogEnergy){
     return dctResult;
 }
 
+/**
+ *  do the normalized DCT
+ *
+ *  @param dctResult        the 13 * frameNum DCT result
+ */
+void getNormalizedDCT(double** dctResult){
+    double m[DCT_DIMENSION] = {0};
+    double sum[DCT_DIMENSION] = {0};
+    
+    for (int i = 0; i < DCT_DIMENSION; i++) {
+        
+        for (int j = 0; j < frameNum; j ++) {
+            sum[i] += dctResult[j][i];
+        }
+        
+        m[i] = sum[i] / frameNum;
+    }
+    
+    for (int i = 0; i < DCT_DIMENSION; i ++) {
+        
+        for (int j = 0; j < frameNum; j ++) {
+            dctResult[j][i] -= m[i];
+        }
+    }
+    
+}
+
 void featureExtraction(){
     short* dataWave;    // store the original wave data
-    short* waveDataAfter; // store the wave data after pre-emphasize
-    short** frameData;   // store the wave data in each frame
+    double* waveDataAfter; // store the wave data after pre-emphasize
+    double** frameData;   // store the wave data in each frame
     int numSample;
     int sampleRate;
 //    long frameNum;
@@ -247,7 +287,7 @@ void featureExtraction(){
     double** melLogEnergy = new double*[frameNum];
     double** frameDCT = new double*[frameNum];
     
-    for (long i = 0; i < frameNum; i++) {
+    for (int i = 0; i < frameNum; i++) {
         
         frameEnergy[i] = getFftEnergy(frameData[i], ACTUAL_SAMPLE_PER_FRAME);
         melEnergy[i] = getMelEnergy(frameEnergy[i]);
@@ -262,6 +302,7 @@ void featureExtraction(){
     ofstream fileMelEnergy("/Users/hty/desktop/testingData/melEnergy.txt");
     ofstream fileMelLogEnergy("/Users/hty/desktop/testingData/melLogEnergy.txt");
     ofstream fileDCT("/Users/hty/desktop/testingData/DCT.txt");
+    ofstream fileNormDCT("/Users/hty/desktop/testingData/NormDCT.txt");
     
     for (int i = 0 ; i < numSample; i++) {
         fileSample << dataWave[i];
@@ -272,7 +313,7 @@ void featureExtraction(){
     delete [] dataWave;
     delete [] waveDataAfter;
     
-    for (long i = 0 ; i < frameNum; i++) {
+    for (int i = 0 ; i < frameNum; i++) {
         
         for (int j = 0; j < ACTUAL_SAMPLE_PER_FRAME; j++) {
             fileFrame << frameData[i][j];
@@ -293,7 +334,7 @@ void featureExtraction(){
         
         for (int m  = 0; m < DCT_DIMENSION; m++) {
             fileDCT << frameDCT[i][m];
-            cout << frameDCT[i][m] << endl;
+//            cout << frameDCT[i][m] << endl;
             fileDCT << " ";
         }
         
@@ -303,5 +344,16 @@ void featureExtraction(){
         fileMelLogEnergy << endl;
         fileDCT << endl;
     }
+    
+    getNormalizedDCT(frameDCT);
+    
+    for (int i = 0; i < frameNum; i ++) {
+        
+        for (int j = 0 ; j < DCT_DIMENSION; j ++) {
+            fileNormDCT << frameDCT[i][j] << " ";
+        }
+        fileNormDCT << endl;
+    }
+    cout << "frameNum =  " << frameNum;
 }
 

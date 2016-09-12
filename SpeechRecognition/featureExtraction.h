@@ -16,15 +16,19 @@ using namespace std;
 
 #define PREEMPHASIZED_FACTOR    (0.95)   // s[n] = s[n] - alpha * s[n-1]
 
-#define SAMPLE_PER_FRAME        (441)    // in order to make each frame 10ms
+#define SAMPLE_PER_FRAME        (882)    // in order to make each frame 20ms
 
-#define FRAME_INTERVAL_TIME     (5)      // set the interval time of each frame to be 5ms, so have 5ms overlapping
+#define FRAME_INTERVAL_TIME     (10)      // set the interval time of each frame to be 10ms, so have 10ms overlapping
 
-#define ACTUAL_SAMPLE_PER_FRAME (512)    // in order to do the fft
+#define ACTUAL_SAMPLE_PER_FRAME (1024)    // in order to do the fft
 
 #define MEL_POINT               (40)
 
 #define DCT_DIMENSION           (13)
+
+#define fre_MinMel              (133.33)
+
+#define fre_MaxMel              (6855.4976)
 
 // ---------
 #define NUM_FILTER              (40)     // set the num of filters to be 40
