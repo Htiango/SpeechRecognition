@@ -226,6 +226,7 @@ double* getDCT(double* melLogEnergy){
         for (int j = 0; j < filterNum; j++) {
             dctResult[i] += melLogEnergy[j] * cos(PI * i / (2 * filterNum) *  (2 * j + 1));
         }
+//        dctResult[i] = dctResult[i] * sqrt(2.0 / filterNum);
     }
     return dctResult;
 }
